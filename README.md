@@ -198,3 +198,10 @@ src/anomalybert/
 tests/              Unit and integration tests
 notebooks/          Jupyter notebook for visualizing results
 ```
+
+# Results
+Inference on trend data (random eval synthetic dataset)
+![](docs/images/2026-02-19-22-35-18.png)
+
+Inference on point anomalies data (random eval synthetic dataset)
+![](docs/images/2026-02-19-22-36-41.png)
