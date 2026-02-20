@@ -6,4 +6,5 @@ It implements normalization using min-max and optionally other algorithms.
 Implementation is not using GPU, only CPU for training as well as inference, implementation can use frameworks like SciKit, Keras, Tensorflow, but pick as low as possible. 
 Implement tests using synthetic datasets. For synthetic datasets create many different scenarios of test data, so they are stored in CSV files. Randomize the data so each generation produces different data. Cardinality of test data is from 10s to 100s of samples.  For the test datasets also create CLI commands to gerenate and store them. CLI must contain all commands for training and inference.
 Create README.MD describing how model works and its usage.
-Create wrapper for the library so model is in ONNX format.
+Create wrapper for the library so model is in ONNX format. Describe ONNX usage in README.MD.
+Create Git action for build and train of model with ONNX export.
