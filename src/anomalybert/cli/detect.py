@@ -17,9 +17,14 @@ import click
 )
 def detect(model, input_path, top_n, output, output_format):
     """Detect anomalies in timeseries data."""
-    from ..inference.detector import AnomalyDetector
+    if model.endswith(".onnx"):
+        from ..inference.onnx_detector import OnnxAnomalyDetector
 
-    detector = AnomalyDetector(model)
+        detector = OnnxAnomalyDetector(model)
+    else:
+        from ..inference.detector import AnomalyDetector
+
+        detector = AnomalyDetector(model)
     results = detector.detect_from_csv(input_path, top_n=top_n)
 
     if output_format == "json":

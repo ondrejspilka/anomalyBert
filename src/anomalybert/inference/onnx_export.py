@@ -31,12 +31,10 @@ def export_to_onnx(
         dummy_input,
         str(output_path),
         export_params=True,
-        opset_version=17,
         input_names=["input"],
         output_names=["scores"],
-        dynamic_axes={
-            "input": {0: "batch_size"},
-            "scores": {0: "batch_size"},
+        dynamic_shapes={
+            "x": {0: torch.export.Dim("batch_size")},
         },
     )
 

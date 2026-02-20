@@ -84,9 +84,12 @@ Normalization parameters are saved alongside the model checkpoint to ensure cons
 
 ```bash
 pip install -e ".[dev]"
+
+# With ONNX export/inference support
+pip install -e ".[dev,onnx]"
 ```
 
-Requires Python 3.10+. Dependencies: PyTorch (CPU), NumPy, Pandas, scikit-learn, Click.
+Requires Python 3.10+. Dependencies: PyTorch (CPU), NumPy, Pandas, scikit-learn, Click. ONNX support adds: onnx, onnxruntime, onnxscript.
 
 ## CLI Usage
 
@@ -151,6 +154,31 @@ anomalybert detect --model models/model.pt --input data.csv --top-n 10 --output 
 
 Input CSV for detection requires only `timestamp` and `value` columns.
 
+### Export to ONNX
+
+Convert a trained PyTorch model to ONNX format for deployment without PyTorch:
+
+```bash
+# Export model to ONNX
+anomalybert export --model models/model.pt --output models/model.onnx
+```
+
+This produces two files:
+- `model.onnx` — the ONNX model graph and weights
+- `model.onnx.json` — metadata (model config + normalizer parameters)
+
+### Detect with ONNX Model
+
+The `detect` command auto-detects `.onnx` files and uses `onnxruntime` for inference:
+
+```bash
+# Inference using ONNX model (no PyTorch needed at runtime)
+anomalybert detect --model models/model.onnx --input data.csv --top-n 10
+anomalybert detect --model models/model.onnx --input data.csv --top-n 5 --format json
+```
+
+ONNX and PyTorch inference produce identical results.
+
 ## Library Usage
 
 ```python
@@ -174,6 +202,20 @@ for r in results:
     print(f"timestamp={r['timestamp']}, value={r['value']:.4f}, score={r['score']:.4f}")
 ```
 
+### ONNX Export and Inference
+
+```python
+from anomalybert.inference.onnx_export import export_to_onnx
+from anomalybert.inference.onnx_detector import OnnxAnomalyDetector
+
+# Export trained model to ONNX
+export_to_onnx("models/model.pt", "models/model.onnx")
+
+# Run inference with ONNX (no PyTorch dependency needed)
+detector = OnnxAnomalyDetector("models/model.onnx")
+results = detector.detect(timestamps, values, top_n=5)
+```
+
 ## Testing
 
 ```bash
@@ -193,8 +235,8 @@ src/anomalybert/
     model/          Transformer model (config, embedding, attention, encoder, heads)
     data/           Normalization, tokenizer, dataset, synthetic data generation
     training/       Loss function, trainer, checkpoint save/load
-    inference/      AnomalyDetector (end-to-end inference pipeline)
-    cli/            CLI commands (generate, train, detect)
+    inference/      AnomalyDetector, ONNX export, OnnxAnomalyDetector
+    cli/            CLI commands (generate, train, detect, export)
 tests/              Unit and integration tests
 notebooks/          Jupyter notebook for visualizing results
 ```
