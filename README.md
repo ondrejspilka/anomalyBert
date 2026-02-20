@@ -1,6 +1,35 @@
+
+
 # AnomalyBERT
 
 Anomaly detection in timeseries data using an encoder-only transformer architecture. Implemented as a Python library with a reference CLI.
+
+## Table of Contents
+
+- [How it was created](#how-it-was-created)
+- [How the Model Works](#how-the-model-works)
+  - [Architecture](#architecture)
+  - [Key Components](#key-components)
+  - [Configurable Parameters](#configurable-parameters)
+  - [Training](#training)
+  - [Finetuning](#finetuning)
+  - [Normalization](#normalization)
+- [Installation](#installation)
+- [CLI Usage](#cli-usage)
+  - [Generate Synthetic Data](#generate-synthetic-data)
+  - [Train a Model](#train-a-model)
+  - [Detect Anomalies](#detect-anomalies)
+  - [Export to ONNX](#export-to-onnx)
+  - [Detect with ONNX Model](#detect-with-onnx-model)
+- [Library Usage](#library-usage)
+  - [ONNX Export and Inference](#onnx-export-and-inference)
+- [Testing](#testing)
+  - [Notebook](#notebook)
+- [Project Structure](#project-structure)
+- [Results](#results)
+
+## How it was created
+Whole model library was create using Claude Opus 4.6. Instructions are in [anomalyBert.md](anomalyBert.md).
 
 ## How the Model Works
 
@@ -227,6 +256,16 @@ pytest tests/test_model.py -v
 ```
 
 Tests use synthetic datasets covering 8 anomaly scenarios at various cardinalities (10s to 100s of samples).
+
+### Notebook
+
+The Jupyter notebook [compare_anomalies](notebooks/compare_anomalies.ipynb) visualizes model predictions against ground-truth labels. It loads a trained model and a synthetic CSV, runs inference, and produces a 3-panel chart:
+
+1. Timeseries with ground-truth anomalies highlighted
+2. Predicted anomaly scores per timestep with top-N threshold
+3. Overlay comparing ground-truth vs predicted anomalies
+
+It also prints precision and recall of the top-N predictions. Set `MODEL_PATH`, `DATASET_PATH`, and `TOP_N` in the first cell, then run all cells. Requires `matplotlib`.
 
 ## Project Structure
 
